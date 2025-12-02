@@ -1,0 +1,2 @@
+recursive-include tutorclickstack/patches *
+recursive-include tutorclickstack/templates *

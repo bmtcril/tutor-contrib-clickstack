@@ -1,0 +1,3 @@
+{{ HYPERDX_HOST }}{$default_site_port} {
+    import proxy "hyperdx:8080"
+}

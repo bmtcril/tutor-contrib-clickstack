@@ -1,0 +1,38 @@
+# Start tutor-contrib-clickstack
+
+M2 = []
+for m in MIDDLEWARE:
+    M2.append(m)
+    if m == 'edx_django_utils.cache.middleware.RequestCacheMiddleware':
+        M2.extend([
+            'edx_django_utils.monitoring.MonitoringSupportMiddleware',
+            'edx_django_utils.monitoring.CodeOwnerMonitoringMiddleware',
+            'edx_django_utils.monitoring.FrontendMonitoringMiddleware',
+            'edx_django_utils.monitoring.MonitoringMemoryMiddleware',
+        ])
+
+MIDDLEWARE = M2
+OPENEDX_TELEMETRY = ['edx_django_utils.monitoring.OpenTelemetryBackend']
+
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry import trace
+
+# Define the resource (helps identify the service)
+resource = Resource.create({"service.name": "openedx"})
+
+# Set up the tracer provider
+trace.set_tracer_provider(TracerProvider(resource=resource))
+tracer = trace.get_tracer_provider().get_tracer(__name__)
+
+# Set up the OTLP exporter to send traces
+otlp_exporter = OTLPSpanExporter(endpoint="http://otel-collector:4317", insecure=True)
+trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(otlp_exporter))
+
+from opentelemetry.instrumentation.django import DjangoInstrumentor
+DjangoInstrumentor().instrument()
+
+
+# End tutor-contrib-clickstack

@@ -1,0 +1,1 @@
+CMD ["opentelemetry-instrument", "uwsgi", "/openedx/uwsgi.ini"]
