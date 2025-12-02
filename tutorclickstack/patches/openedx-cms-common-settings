@@ -1,0 +1,21 @@
+try:
+    import os
+    from logging import getLogger
+
+    from hyperdx.opentelemetry import configure_opentelemetry
+    from uwsgidecorators import postfork
+
+    os.environ["HYPERDX_API_KEY"] = "{{HYPERDX_API_KEY}}"
+    os.environ["OTEL_SERVICE_NAME"] = "Studio"
+    os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"] = "http://otel-collector:4318"
+    os.environ["HYPERDX_DATASET"] = "testdslms"
+
+    @postfork
+    def init_tracing():
+        configure_opentelemetry()
+
+    otel_logger = getLogger("opentelemetry")
+    otel_logger.propagate = False
+except ImportError:
+    # Fails on workers, not currently instrumenting
+    pass

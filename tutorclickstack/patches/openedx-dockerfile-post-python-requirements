@@ -1,5 +1,5 @@
-RUN --mount=type=cache,target=/openedx/.cache/pip,sharing=shared \
-    pip install "opentelemetry-sdk" "opentelemetry-instrumentation-django" "opentelemetry-exporter-otlp-proto-grpc"
-
 # RUN --mount=type=cache,target=/openedx/.cache/pip,sharing=shared \
-#    pip install "hyperdx-opentelemetry"
+#    pip install "opentelemetry-sdk" "opentelemetry-instrumentation-django" "opentelemetry-exporter-otlp-proto-grpc"
+
+RUN --mount=type=cache,target=/openedx/.cache/pip,sharing=shared \
+   pip install "hyperdx-opentelemetry"
