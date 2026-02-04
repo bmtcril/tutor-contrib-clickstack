@@ -1,8 +1,9 @@
-clickstack plugin for `Tutor <https://docs.tutor.edly.io>`__
+ClickStack plugin for `Tutor <https://docs.tutor.edly.io>`__
 ############################################################
 
-clickstack plugin for Tutor
-
+THIS PLUGIN IS NOT YET READY FOR USE. It is a proof-of-concept that has many
+hard coded values and is available for informational purposes only. It's unlikely
+to work outside of my environment without extensive modifications.
 
 Installation
 ************
