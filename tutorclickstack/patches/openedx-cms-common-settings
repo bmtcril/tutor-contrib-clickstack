@@ -2,18 +2,38 @@ try:
     import os
     from logging import getLogger
 
-    from hyperdx.opentelemetry import configure_opentelemetry
+    from hyperdx.opentelemetry import configure_opentelemetry, HyperDXOptions
     from uwsgidecorators import postfork
-
-    os.environ["HYPERDX_API_KEY"] = "{{HYPERDX_API_KEY}}"
     os.environ["OTEL_SERVICE_NAME"] = "Studio"
-    os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"] = "http://otel-collector:4318"
-    os.environ["HYPERDX_DATASET"] = "testdslms"
 
     @postfork
     def init_tracing():
-        configure_opentelemetry()
+        configure_opentelemetry(
+            HyperDXOptions(
+                debug=True,  # prints exported traces & metrics to the console, useful for debugging and setting up
+                # Honeycomb API Key, required to send data to Honeycomb
+                apikey="{{HYPERDX_API_KEY}}",
+                # Dataset that will be populated with data from this service in Honeycomb
+                service_name="Studio",
+                # enable_local_visualizations=True, # Will print a link to a trace produced in Honeycomb to the console, useful for debugging
+                # traces_apikey = None, Set a specific Honeycomb API key just for traces
+                # metrics_apikey = None, Set a specific Honeycomb API key just for metrics
+                # service_version = None, Set a version for this service, will show up as an attribute on all spans
+                endpoint="http://otel-collector:4318",  # set specific endpoint if not Honeycomb default
+                endpoint_insecure=True,  # default is False; set to True if setting insecure endpoint
+                # traces_endpoint = None, Set a specific exporter endpoint just for traces
+                # metrics_endpoint = None, Set a specific exporter endpoint just for metrics
+                # Set the exporter protocol, grpc or http/protobuf
+                exporter_protocol="http/protobuf",
+                # traces_exporter_protocol = "grpc", Set a specific exporter protocol just for traces, grpc or http/protobuf
+                # metrics_exporter_protocol = "grpc", Set a specific exporter protocol just for metrics, grpc or http/protobuf
+                # sample_rate = DEFAULT_SAMPLE_RATE, Set a sample rate for spans
+                # Set a metrics dataset to enable metrics
+                metrics_dataset="testdslms",
+            )
+        )
 
+    # Disable log propagation, otherwise if open telemetry throws errors it will recurse infinitely
     otel_logger = getLogger("opentelemetry")
     otel_logger.propagate = False
 except ImportError:

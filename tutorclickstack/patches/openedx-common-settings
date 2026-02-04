@@ -1,6 +1,5 @@
 # Start tutor-contrib-clickstack
 
-"""
 M2 = []
 for m in MIDDLEWARE:
     M2.append(m)
@@ -14,7 +13,6 @@ for m in MIDDLEWARE:
 
 MIDDLEWARE = M2
 OPENEDX_TELEMETRY = ['edx_django_utils.monitoring.OpenTelemetryBackend']
-"""
 
 
 # End tutor-contrib-clickstack
